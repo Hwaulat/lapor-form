@@ -1,0 +1,11 @@
+{
+  "title": "LAPOR",
+  "description": "This mobile application offers instant access to the home screen, providing users with a seamless experience and quick navigation to essential features.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
