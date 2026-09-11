@@ -1,7 +1,8 @@
+import { useState } from "react";
 import {
   User, Bell, Globe, Info, LogOut, ChevronRight,
   ClipboardList, TrendingUp, CalendarCheck, Shield,
-  Lock, Star,
+  Lock, Star, ChevronLeft
 } from "lucide-react";
 import { Submission } from "../App";
 import LaportLogo from "../components/LaportLogo";
@@ -14,32 +15,143 @@ interface Props {
 
 const MENU: {
   section: string;
-  items: { icon: React.ElementType; label: string; sublabel?: string; danger?: boolean; action?: string }[];
+  items: { id?: string; icon: React.ElementType; label: string; sublabel?: string; danger?: boolean; action?: string }[];
 }[] = [
   {
     section: "Akun",
     items: [
-      { icon: User,          label: "Informasi Pribadi",   sublabel: "Nama, NIK, Jabatan" },
-      { icon: Lock,          label: "Keamanan",             sublabel: "Password & PIN" },
+      { id: "personal_info", icon: User,          label: "Informasi Pribadi",   sublabel: "Nama, NIK, Jabatan" },
+      { id: "security",      icon: Lock,          label: "Keamanan",             sublabel: "Password & PIN" },
     ],
   },
   {
     section: "Preferensi",
     items: [
-      { icon: Bell,          label: "Notifikasi",           sublabel: "Pengingat laporan harian" },
-      { icon: Globe,         label: "Bahasa",               sublabel: "Indonesia / English" },
+      { id: "notifications", icon: Bell,          label: "Notifikasi",           sublabel: "Pengingat laporan harian" },
     ],
   },
   {
     section: "Lainnya",
     items: [
-      { icon: Info,          label: "Tentang LAPORT",       sublabel: "Versi 1.0.0" },
-      { icon: Star,          label: "Beri Ulasan",          sublabel: "Di Play Store / App Store" },
+      { id: "about",         icon: Info,          label: "Tentang LAPORT",       sublabel: "Versi 1.0.0" },
+      { id: "review",        icon: Star,          label: "Beri Ulasan",          sublabel: "Di Play Store / App Store" },
     ],
   },
 ];
 
+/* ── Sub Views ────────────────────────────────────── */
+
+function SubViewHeader({ title, onBack }: { title: string, onBack: () => void }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px 14px", borderBottom: "1px solid #e5e5e5", background: "#fff" }}>
+      <button onClick={onBack} style={{ width: 34, height: 34, borderRadius: 10, background: "#f5f5f5", border: "1px solid #e5e5e5", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", transition: "background 0.15s" }}>
+        <ChevronLeft size={18} color="#737373" strokeWidth={2} />
+      </button>
+      <h1 style={{ fontSize: 16, fontWeight: 700, color: "#0c0c0c", margin: 0 }}>{title}</h1>
+    </div>
+  );
+}
+
+function Toggle({ initial = false }: { initial?: boolean }) {
+  const [on, setOn] = useState(initial);
+  return (
+    <button onClick={() => setOn(!on)} style={{ width: 44, height: 24, borderRadius: 12, background: on ? "#10B981" : "#e5e5e5", position: "relative", border: "none", cursor: "pointer", transition: "background 0.2s" }}>
+      <div style={{ width: 20, height: 20, borderRadius: 10, background: "#fff", position: "absolute", top: 2, left: on ? 22 : 2, transition: "left 0.2s", boxShadow: "0 1px 2px rgba(0,0,0,0.2)" }} />
+    </button>
+  );
+}
+
+function PersonalInfoView({ onBack }: { onBack: () => void }) {
+  const Input = ({ label, value, readOnly = false }: any) => (
+    <div style={{ marginBottom: 16 }}>
+      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#737373", marginBottom: 6 }}>{label}</label>
+      <input type="text" defaultValue={value} readOnly={readOnly} style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: "1px solid #e5e5e5", background: readOnly ? "#f9f9f9" : "#fff", color: readOnly ? "#737373" : "#0c0c0c", fontSize: 14, fontFamily: "'Inter', sans-serif", outline: "none", transition: "border-color 0.15s" }} onFocus={(e) => { if (!readOnly) e.target.style.borderColor = "#F97316"; }} onBlur={(e) => { e.target.style.borderColor = "#e5e5e5"; }} />
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-full" style={{ background: "#f9f9f9", fontFamily: "'Inter', sans-serif" }}>
+      <SubViewHeader title="Informasi Pribadi" onBack={onBack} />
+      <div className="flex-1 overflow-y-auto no-scrollbar" style={{ padding: 20 }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 24 }}>
+          <div style={{ width: 80, height: 80, borderRadius: "50%", background: "#F97316", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 12px rgba(249,115,22,0.3)", position: "relative" }}>
+            <span style={{ fontSize: 28, fontWeight: 700, color: "#fff", letterSpacing: "-0.01em" }}>AS</span>
+            <div style={{ position: "absolute", bottom: -2, right: -2, width: 28, height: 28, borderRadius: "50%", background: "#fff", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}>
+              <User size={14} color="#F97316" strokeWidth={2.5} />
+            </div>
+          </div>
+        </div>
+        <Input label="Nama Lengkap" value="Ahmad Suryadi" />
+        <Input label="NIK" value="MDZ-2024-1087" readOnly />
+        <Input label="Jabatan" value="Operator Produksi" readOnly />
+        <Input label="Email" value="ahmad.suryadi@example.com" />
+        <Input label="No. Telepon" value="+62 812-3456-7890" />
+      </div>
+      <div style={{ padding: "16px 20px 24px", background: "#fff", borderTop: "1px solid #e5e5e5" }}>
+        <button style={{ width: "100%", padding: "14px 0", borderRadius: 12, background: "#F97316", border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", boxShadow: "0 2px 4px rgba(249,115,22,0.3)" }}>Simpan Perubahan</button>
+      </div>
+    </div>
+  );
+}
+
+function SecurityView({ onBack }: { onBack: () => void }) {
+  const Input = ({ label, type = "password" }: any) => (
+    <div style={{ marginBottom: 16 }}>
+      <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#737373", marginBottom: 6 }}>{label}</label>
+      <input type={type} style={{ width: "100%", padding: "12px 14px", borderRadius: 10, border: "1px solid #e5e5e5", background: "#fff", color: "#0c0c0c", fontSize: 14, fontFamily: "'Inter', sans-serif", outline: "none", transition: "border-color 0.15s" }} onFocus={(e) => e.target.style.borderColor = "#F97316"} onBlur={(e) => e.target.style.borderColor = "#e5e5e5"} />
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-full" style={{ background: "#f9f9f9", fontFamily: "'Inter', sans-serif" }}>
+      <SubViewHeader title="Keamanan" onBack={onBack} />
+      <div className="flex-1 overflow-y-auto no-scrollbar" style={{ padding: 20 }}>
+        <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0c0c0c", marginBottom: 16 }}>Ubah Password</h2>
+        <Input label="Password Saat Ini" />
+        <Input label="Password Baru" />
+        <Input label="Konfirmasi Password Baru" />
+        <button style={{ width: "100%", padding: "12px 0", borderRadius: 10, background: "#F97316", border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", marginBottom: 32 }}>Perbarui Password</button>
+
+
+      </div>
+    </div>
+  );
+}
+
+function NotificationsView({ onBack }: { onBack: () => void }) {
+  const SettingItem = ({ title, desc, initial }: any) => (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 0", borderBottom: "1px solid #e5e5e5" }}>
+      <div style={{ paddingRight: 16 }}>
+        <p style={{ fontSize: 14, fontWeight: 600, color: "#0c0c0c", margin: 0 }}>{title}</p>
+        <p style={{ fontSize: 12, color: "#737373", margin: "4px 0 0", lineHeight: 1.4 }}>{desc}</p>
+      </div>
+      <Toggle initial={initial} />
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col h-full" style={{ background: "#f9f9f9", fontFamily: "'Inter', sans-serif" }}>
+      <SubViewHeader title="Notifikasi" onBack={onBack} />
+      <div className="flex-1 overflow-y-auto no-scrollbar" style={{ padding: "0 20px" }}>
+        <SettingItem title="Notifikasi Push" desc="Terima notifikasi di layar kunci dan banner saat aplikasi ditutup." initial={true} />
+        <SettingItem title="Pengingat Laporan Harian" desc="Notifikasi setiap pukul 16:00 jika Anda belum mengirim laporan BOS." initial={true} />
+        <SettingItem title="Pengingat Laporan Mingguan" desc="Rangkuman aktivitas pelaporan Anda pada akhir pekan." initial={false} />
+        <SettingItem title="Pembaruan Aplikasi" desc="Pemberitahuan tentang fitur baru dan jadwal pemeliharaan sistem." initial={true} />
+      </div>
+    </div>
+  );
+}
+
+
+/* ── Main Component ───────────────────────────────── */
+
 export default function ProfileScreen({ submissions, today, onLogout }: Props) {
+  const [activeView, setActiveView] = useState<string | null>(null);
+
+  if (activeView === "personal_info") return <PersonalInfoView onBack={() => setActiveView(null)} />;
+  if (activeView === "security") return <SecurityView onBack={() => setActiveView(null)} />;
+  if (activeView === "notifications") return <NotificationsView onBack={() => setActiveView(null)} />;
+
   /* Stats */
   const totalAll = submissions.length;
 
@@ -70,8 +182,8 @@ export default function ProfileScreen({ submissions, today, onLogout }: Props) {
         <div style={{
           display: "flex", alignItems: "center", gap: 14,
           background: "#fff7ed", border: "1px solid #fed7aa",
-          borderRadius: 14, padding: "14px 16px",
-        }}>
+          borderRadius: 14, padding: "14px 16px", cursor: "pointer"
+        }} onClick={() => setActiveView("personal_info")}>
           {/* Avatar */}
           <div style={{
             width: 52, height: 52, borderRadius: "50%",
@@ -171,16 +283,17 @@ export default function ProfileScreen({ submissions, today, onLogout }: Props) {
               {section.items.map((item, idx) => (
                 <button
                   key={idx}
+                  onClick={() => item.id && setActiveView(item.id)}
                   style={{
                     display: "flex", alignItems: "center", gap: 12,
                     width: "100%", padding: "13px 14px",
                     background: "transparent", border: "none",
                     borderBottom: idx < section.items.length - 1 ? "1px solid #f5f5f5" : "none",
-                    cursor: "pointer", textAlign: "left",
+                    cursor: item.id ? "pointer" : "default", textAlign: "left",
                     fontFamily: "'Inter', sans-serif",
                     transition: "background 0.1s",
                   }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "#f9f9f9")}
+                  onMouseEnter={e => { if(item.id) e.currentTarget.style.background = "#f9f9f9"; }}
                   onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
                 >
                   <div style={{

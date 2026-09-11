@@ -210,7 +210,11 @@ export const FORMS_CONFIG: FormConfig[] = [
             id: "person_involved",
             labelId: "Sebutkan nama, divisi, dan perusahaan dari personil yang hampir celaka",
             labelEn: "State the name, division, and company of the person who nearly had an accident",
-            type: "text",
+            type: "dropdown",
+            options: [
+              { value: "Hasan - Maintenance", labelId: "Hasan - Maintenance", labelEn: "Hasan - Maintenance" },
+              { value: "Lainnya", labelId: "Lainnya", labelEn: "Others" },
+            ],
             required: true,
           },
           {

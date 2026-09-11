@@ -165,6 +165,43 @@ function FieldInput({ field, value, onChange, color }: {
   }
 
   if (field.type === "dropdown") {
+    const hasLainnyaOption = field.options?.some(o => o.value === "Lainnya");
+    const isCustomText = hasLainnyaOption && (value === "Lainnya" || (value !== "" && !field.options?.find(o => o.value === value)));
+
+    if (isCustomText) {
+      return (
+        <div style={{ position: "relative" }}>
+          <input
+            type="text"
+            value={value === "Lainnya" ? "" : value}
+            onChange={e => onChange(e.target.value)}
+            placeholder="Tulis manual di sini..."
+            style={{ ...inputBase(focused, color), paddingRight: 36 }}
+            onFocus={fo} onBlur={fb}
+            autoFocus
+          />
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            style={{
+              position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)",
+              background: "none", border: "none", cursor: "pointer", padding: 4,
+              display: "flex", alignItems: "center", justifyContent: "center"
+            }}
+          >
+            <div style={{
+              width: 18, height: 18, borderRadius: 9,
+              background: T.border, color: T.mutedFg, fontSize: 12,
+              display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold",
+              lineHeight: 1
+            }}>
+              ✕
+            </div>
+          </button>
+        </div>
+      );
+    }
+
     return (
       <div style={{ position: "relative" }}>
         <select
