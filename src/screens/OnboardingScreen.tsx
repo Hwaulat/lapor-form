@@ -121,7 +121,7 @@ export default function OnboardingScreen({ onStart }: Props) {
           lineHeight: 1.2, letterSpacing: "-0.02em",
           margin: "0 0 12px",
         }}>
-          Laporan EHS<br />Lebih Mudah &<br />Terorganisir
+          Laporan HSE<br />Lebih Mudah &<br />Terorganisir
         </h1>
 
         {/* Subtitle */}
